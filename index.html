@@ -190,17 +190,23 @@ if ($('#searchBox').is(':focus')){
 });
       }
 
-      // make a new eventlsiterner!!! 
+      
+      // For Ronny: this is the part that simply doesn't work
+      // It simply will not read "genButton" when I click it even though every generated
+      // button has that ID.
 
-      var cost = document.getElementById("genButton");
+    $("#genButton").on("click", function () {
 
-
-      var person = ($(this).attr("data-person"));
+       var person = ($(this).attr("data-person"));
 
       queryURL = ("http://api.giphy.com/v1/gifs/search?q="+person+"&api_key=dc6zaTOxFJmzC");
 
       console.log(queryURL);
 
+
+    })
+
+     
      
 
   
