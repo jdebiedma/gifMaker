@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Giphy API</title>
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" >
+</head>
+
+<body>
+
+<style type="text/css">
+
+h1 {
+  margin-top: 0px;
+  margin-bottom: 0px;
+  font-size: 120px;
+  text-align: center;
+}
+
+h6 { 
+
+margin-top: 0px;
+text-align: center;
+
+
+}
+  
+h4 {
+
+  text-align: left;
+  
+}
+
+#buttons {
+
+  text-align: center;
+}
+
+#genButton {
+
+  margin-right: 5px;
+
+}
+
+
+
+</style>
+
+
+<div class = "container">
+  <br>
+  <br>
+
+<h1>.gif generator.</h1>
+<h6>by juan debiedma</h6>
+
+<div class = "row">
+
+ <div class="col-lg-8">
+    <div class="input-group" style = "margin-left: 50%">
+      <input type="text" id="searchBox" class="form-control" placeholder="Search for..." autofocus>
+      <span class="input-group-btn">
+        <button class="btn btn-default" id="submit" type="button">Go!</button>
+      </span>
+    </div><!-- /input-group -->
+  </div><!-- /.col-lg-6 -->
+</div><!-- /.row -->
+
+<br>
+
+<div class = "row">
+
+<div class="col-lg-12">
+
+<div id="buttons">
+
+
+  
+</div>
+</div>
+</div>
+
+
+  <div class = "panel" id = "image"></div>
+</div>
+  <script src="http://code.jquery.com/jquery-2.1.3.min.js"></script>
+  <script type="text/javascript">
+    // Example queryURL for Giphy API
+
+
+
+
+   
+
+    //you always need an example queryURL that links you to the proper API
+    //the $.ajax syntax below is the command used to fetch things from the API, probably many other native commands you can use
+
+
+   
+
+      //the for loop below should give you the 10 top trending gifs all displayed on your site
+      //for the homework the idea is that you can type in requests into a search box, and that searched item will populate 
+      //a series of other searched items (buttons) that already exist. The buttons should have an on-click command that 
+      //triggers an API request of the text content in said button (probably where you will replace "trending?" in the query)
+
+      //HW PSEUDOCODE
+
+      // 1) Similar to the RPG Game, create a function that appends an item to a div that holds divs. It should be a small rectangular
+      //     box that just has text and holds data that is the text itself (see hangman game for reminder most likely).
+
+      // 2) The function should be triggered when a certain button is pressed called "Search" which is conveniently next to a search bar.
+      //      Bootstrap will probably be used to make the search bar, need to double check how to "pull" the text from it.
+      //        A good test here would be a simple console.log or alert that returns the text of the box.
+
+      // 3) Clicking "Enter" should also trigger the function.
+
+      // 4) The function will take whatever the user typed into the search box and run it through a function that puts the text string
+      //      into the queryURL to make the proper request. 
+      //        This function will simultaneously append a button div next to all of the already existing button divs. This appended button div
+      //          will contain a .data parameter exactly equal to what the user typed in (double check if there has to be a capital letter check)
+      //            and also display in itself the exact string it is storing (a box with text in it)
+
+      // 5) We can run a for loop (from 0 to 10 for instance) to generate 10 gifs; number can change depending on API parameters
+
+      // 6) We can probably make buttons that change the number of gifs that are generated; this would be a straightforward function
+      //      that simply changes another part of the queryURL string that dictates the LIMIT of the number of requested/pulled items
+
+      // 7) Once all of the buttons are generated, the $("#loadedButton").on("click" function{}) would be a simple modification of what
+      //      ALREADY EXISTS IN THIS VERY HTML document. Make sure that for loop works. If it does, you now already have a working version of this.
+
+      // 8) Build a div that holds the requested gifs. You might need to do an overflow parameter (see RPG game bluebox) to fit everything.
+      //      As you saw earlier, you most likely have to use the response.data[1].images.downsized.url thing we were messing around with. 
+      //         If not downsized, there's probably other sizes or formats that exist within the request object.
+
+      // 9) Have the search bar be on top (with a magnifying glass glyphicon and fadeaway "Search..." text) with the loadedButtons below.
+      //      Every time the function runs it should delete (or slideUp() ? ) the contents of the div that holds the loadedButtons (buttonsHolder)
+      //        so that it can be repopulated with the 10, 15, or 25 (etc) requested gifs that use the Giphy API in this document.
+      //          The function will make use of the proper ajax syntax and links as shown in this document.
+
+      // 10) To have a bunch of items already in the "searched" array, simply have the function run itself 10 or so times using 
+      //      strings from an array that already exist, i.e. var loadedItems = ["monkeys", "dogs", "nutella", "darth vader", etc.]
+
+      // 11) The loadedItems might have to be a forLoop that exists separate from the rest of the entire code *
+
+      // 12) Whenever the document is reloaded it will just begin with the 10 phrases in loadedItems; perhaps one of those can be chosen at random 
+      //       and be run through the actual gif geenrator function once the page loads.
+
+      // 13) Have fun and good luck! And make sure to treat yourself. 2nd at Summit is awesome, man. :)
+
+      // 14) The last thing would be to figure out how to prepend the picture's rating above it; you might have to have the main function generate 
+      //       each gif within its own unique div that can also hold the rating. Would be cool to have the rating absolutely positioned inside it!
+
+      // 15) All of the images should have a fixed height rather than a fixed width
+
+      // 16) Need to figure out how to make it so the gif will only play/pause on a click...might be included within the API.
+
+
+
+//alert($("#searchBox").val());
+
+$(document).ready(function() {
+
+ var searchTerm = "sloth";
+    var fixedSearchTerm = searchTerm.replace(" ", "+");
+    
+    var queryURL = ("http://api.giphy.com/v1/gifs/search?q="+fixedSearchTerm+"&api_key=dc6zaTOxFJmzC");
+
+var guess;
+var fixedGuess;
+
+
+
+if ($('#searchBox').is(':focus')){
+
+        var wage = document.getElementById("searchBox");
+
+        $("#submit").on("click", function() {
+
+          imageGet();
+          
+        })
+
+        wage.addEventListener("keydown", function (e) {
+      if (e.keyCode === 13) {  //checks whether the pressed key is "Enter"
+        imageGet();
+   
+    }
+});
+      }
+
+      // make a new eventlsiterner!!! 
+
+      var cost = document.getElementById("genButton");
+
+
+      var person = ($(this).attr("data-person"));
+
+      queryURL = ("http://api.giphy.com/v1/gifs/search?q="+person+"&api_key=dc6zaTOxFJmzC");
+
+      console.log(queryURL);
+
+     
+
+  
+
+
+function imageGet() {
+
+    $("#image").html("");
+
+    guess = $('#searchBox').val();
+    fixedGuess = guess.replace(" ", "+");
+    queryURL = ("http://api.giphy.com/v1/gifs/search?q="+fixedGuess+"&api_key=dc6zaTOxFJmzC");
+    //evnt.preventDefault();
+
+     $.ajax({
+      url: queryURL,
+      method: 'GET'
+    }).done(function(response) {
+      
+      console.log(response);
+      
+
+       if (response.data[1].images) {
+       $("#buttons").append('<button type="button" class="btn btn-primary" id="genButton" data-person='+fixedGuess+'>'+guess+'</button>')
+
+
+        }
+
+   
+
+
+      for (var i = 0; i < 10; i++) {
+
+        if (response.data[i] != null) {
+
+         
+        
+        $("#image").append("<div id = gif"+ i +" ><img src=" + response.data[i].images.fixed_height.url + " ></div>")
+        $("#gif"+i).prepend("<h4>Rating: "+(response.data[i].rating)+ "</h4>");
+        //.append("<p>" + response.data[i].rating + "</p>");
+          
+      }
+
+      else {
+
+        console.log("item doesn't exist")
+        
+      }
+
+    }
+
+      $('#searchBox').val("")
+      .focus();
+    
+   
+
+    });
+}
+
+
+  
+
+});
+//to make them all appear...?
+//test if it works once you have internet
+//alert(response.data[1].url); gives you the actual URL of the site where the image is hosted, but the actual pic (variant) is i.e. response.data[1].images.downsized.url
+
+  
+
+  </script>
+
+
+
+
+  
+  
+
+</body>
+
+</html>
