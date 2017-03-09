@@ -38,7 +38,7 @@ h4 {
   text-align: center;
 }
 
-#genButton {
+.genButton {
 
   margin-right: 5px;
 
@@ -190,26 +190,7 @@ if ($('#searchBox').is(':focus')){
 });
       }
 
-      
-      // For Ronny: this is the part that simply doesn't work
-      // It simply will not read "genButton" when I click it even though every generated
-      // button has that ID.
-
-    $("#genButton").on("click", function () {
-
-       var person = ($(this).attr("data-person"));
-
-      queryURL = ("http://api.giphy.com/v1/gifs/search?q="+person+"&api_key=dc6zaTOxFJmzC");
-
-      console.log(queryURL);
-
-
-    })
-
-     
-     
-
-  
+   
 
 
 function imageGet() {
@@ -217,7 +198,7 @@ function imageGet() {
     $("#image").html("");
 
     guess = $('#searchBox').val();
-    fixedGuess = guess.replace(" ", "+");
+    fixedGuess = guess.replace(/ /g, "+");
     queryURL = ("http://api.giphy.com/v1/gifs/search?q="+fixedGuess+"&api_key=dc6zaTOxFJmzC");
     //evnt.preventDefault();
 
@@ -230,7 +211,7 @@ function imageGet() {
       
 
        if (response.data[1].images) {
-       $("#buttons").append('<button type="button" class="btn btn-primary" id="genButton" data-person='+fixedGuess+'>'+guess+'</button>')
+       $("#buttons").append($("#buttons").append('<button type="button" class="btn btn-primary genButton" data-person="'+fixedGuess+'">'+guess+'</button>'))
 
 
         }
@@ -266,7 +247,70 @@ function imageGet() {
     });
 }
 
+$('#buttons').on("click", ".genButton", function(event) {
 
+
+      var buttonClicked = $(event.target);
+      if (buttonClicked.attr('data-person')) {
+
+      guess = buttonClicked.attr('data-person');
+      fixedGuess = guess.replace(/ /g, "+");
+      
+      console.log("Clicked on button:", buttonClicked.attr('data-person'));
+
+      queryURL = ("http://api.giphy.com/v1/gifs/search?q="+fixedGuess+"&api_key=dc6zaTOxFJmzC");
+
+
+      $.ajax({
+      url: queryURL,
+      method: 'GET'
+    }).done(function(response) {
+
+         if(response.data[1].images) {
+
+          //Do everything imageGet does but with new queryURL
+
+          console.log("first");
+            $("#image").html("");
+            
+
+            console.log(response);
+
+            for (var i = 0; i < 10; i++) {
+
+        if (response.data[i] != null) {
+
+         
+        
+        $("#image").append("<div id = gif"+ i +" ><img src=" + response.data[i].images.fixed_height.url + " ></div>")
+        $("#gif"+i).prepend("<h4>Rating: "+(response.data[i].rating)+ "</h4>");
+        //.append("<p>" + response.data[i].rating + "</p>");
+          
+      }
+
+      else {
+
+        console.log("item doesn't exist")
+        
+      }
+
+    }
+
+      $('#searchBox').val("")
+      .focus();
+        
+
+
+      }
+    })
+
+
+
+
+      
+
+    }
+});
   
 
 });
