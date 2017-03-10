@@ -15,7 +15,7 @@
 h1 {
   margin-top: 0px;
   margin-bottom: 0px;
-  font-size: 120px;
+  font-size: 10vw;
   text-align: center;
 }
 
@@ -30,8 +30,18 @@ text-align: center;
 h4 {
 
   text-align: center;
+  margin-top: 20px;
   
 }
+
+
+
+.randompic {
+
+  margin-bottom: 10px;
+
+}
+
 
 .hidden {
 
@@ -51,6 +61,7 @@ h4 {
 .genButton {
 
   margin-right: 5px;
+  margin-bottom: 5px;
 
 }
 
@@ -97,6 +108,231 @@ h4 {
 </div>
   <script src="http://code.jquery.com/jquery-2.1.3.min.js"></script>
   <script type="text/javascript">
+
+
+$(document).ready(function() {
+
+var guess;
+var fixedGuess;
+var currentPic;
+var isPlaying = false;
+
+var imageLinks = [];
+
+      $("#submit").on("click", imageGet);
+
+      $("#searchBox").keydown(function (e) {
+        if (e.keyCode === 13) imageGet();
+      });
+   
+
+
+function imageGet() {
+
+    $("#image").html("");
+
+    guess = $('#searchBox').val();
+    fixedGuess = guess.replace(/ /g, "+");
+    queryURL = ("http://api.giphy.com/v1/gifs/search?q="+fixedGuess+"&api_key=dc6zaTOxFJmzC");
+    //evnt.preventDefault();
+
+     $.ajax({
+      url: queryURL,
+      method: 'GET'
+    }).done(function(response) {
+      
+      console.log(response);
+      
+
+       if (response.data[1].images) {
+       $("#buttons").append($("#buttons").append('<button type="button" class="btn btn-primary genButton" data-person="'+fixedGuess+'">'+guess+'</button>'))
+
+        imageGet2();
+
+        }
+
+    });
+}
+
+
+function imageGet2 () {
+
+ $.ajax({
+      url: queryURL,
+      method: 'GET'
+    }).done(function(response) {
+
+         if(response.data[1].images) {
+
+          //Do everything imageGet does but with new queryURL
+
+          console.log("first");
+            $("#image").html("");
+            
+
+            console.log(response);
+
+            for (var i = 0; i < 12; i++) {
+
+        if (response.data[i] != null) {
+
+         
+        
+         $("#image").append("<div class='col-xs-4 pic gif"+ i +"' data-person = "+guess+" ><img class='midPic' src=" + response.data[i].images.fixed_height_still.url + " ></div>");
+         
+
+        $(".gif"+i).prepend("<h4 class = 'rating"+i+"''>Rating: "+(response.data[i].rating)+ "</h4>")
+        .data("picName", i)
+        .data("isPlaying", false);
+        //.append("<p>" + response.data[i].rating + "</p>");
+          
+
+
+      }
+
+      else {
+
+        console.log("item doesn't exist")
+        
+      }
+
+    }
+
+      $('#searchBox').val("")
+      .focus();
+        
+
+
+      }
+    })
+
+
+}
+
+function randomGet() {
+
+$("#image").html("");
+
+for (var i = 0; i < 12; i++) {
+  
+
+
+$.ajax({
+      url: queryURL,
+      method: 'GET'
+    }).done(function(response) {
+      
+      console.log(response); 
+
+       $("#image").append("<div class='col-xs-4 randompic gif"+ i +"' data-person = random"+i+" ><img class='midPic' src=" + response.data.fixed_height_downsampled_url+ " ></div>");
+
+       $(".gif"+i)
+        .data("picName", i)
+        .data("isPlaying", false);
+
+
+    })
+    }
+
+}
+
+
+
+$("#image").on("click", ".pic", function () {
+
+
+          currentPic = $(this).data("picName");
+
+          isPlaying = $(this).data("isPlaying");
+
+
+          $.ajax({
+      url: queryURL,
+      method: 'GET'
+    }).done(function(response) {
+
+          console.log(currentPic);
+
+          for (var i = 0; i < 12; i++) {
+            
+
+          if (currentPic===i) {
+
+          if (!isPlaying) {
+
+             
+
+           $(".gif"+i).html("<h4 class = 'rating"+i+"''>Rating: "+(response.data[i].rating)+ "</h4><div class='col-xs-4 pic gif"+ i +"' data-person = "+guess+" ><img class='midPic' src=" + response.data[i].images.fixed_height.url + " ></div>").data("isPlaying", true);
+
+
+           console.log($(".gif"+i).data("isPlaying"));
+          
+         }
+
+         else if(isPlaying) {
+
+          $(".gif"+i).html("<h4 class = 'rating"+i+"''>Rating: "+(response.data[i].rating)+ "</h4><div class='col-xs-4 pic gif"+ i +"' data-person = "+guess+" ><img class='midPic' src=" + response.data[i].images.fixed_height_still.url + " ></div>").data("isPlaying", false);
+
+            
+         }
+          
+
+          }
+
+          }
+
+         })
+         
+        })
+
+$('#buttons').on("click", ".genButton", function(event) {
+
+
+      var buttonClicked = $(event.target);
+      
+      if (buttonClicked.attr('data-person')==="random") {
+
+         queryURL = ("http://api.giphy.com/v1/gifs/random?&api_key=dc6zaTOxFJmzC");
+
+         randomGet();
+    }
+
+
+     else if (buttonClicked.attr('data-person')) {
+
+      guess = buttonClicked.attr('data-person');
+      fixedGuess = guess.replace(/ /g, "+");
+      
+      console.log("Clicked on button:", buttonClicked.attr('data-person'));
+
+      queryURL = ("http://api.giphy.com/v1/gifs/search?q="+fixedGuess+"&api_key=dc6zaTOxFJmzC");
+
+        imageGet2();
+     
+
+    }
+
+   
+});
+
+var randomVars = ["puppies", "kittens", "burgers", "cheesecake", "ron paul", "hungrybox",
+"star wars", "spongebob", "nutella", "sloth", "mind blown"]
+
+
+for (var i = 0; i < randomVars.length; i++) {
+
+$("#buttons").append('<button type="button" class="btn btn-primary genButton" data-person="'+randomVars[i]+'">'+randomVars[i]+'</button>')
+
+}
+
+$("#buttons").prepend('<button type="button" data-person="random" class="btn btn-danger genButton">Random (Autoplay)</button>') 
+
+
+});
+
+
+
+
     // Example queryURL for Giphy API
 
 
@@ -168,180 +404,6 @@ h4 {
 
 
 
-//alert($("#searchBox").val());
-
-$(document).ready(function() {
-
-var guess;
-var fixedGuess;
-var currentPic;
-var isPlaying = false;
-
-var imageLinks = [];
-
-      $("#submit").on("click", imageGet);
-
-      $("#searchBox").keydown(function (e) {
-        if (e.keyCode === 13) imageGet();
-      });
-   
-
-
-function imageGet() {
-
-    $("#image").html("");
-
-    guess = $('#searchBox').val();
-    fixedGuess = guess.replace(/ /g, "+");
-    queryURL = ("http://api.giphy.com/v1/gifs/search?q="+fixedGuess+"&api_key=dc6zaTOxFJmzC");
-    //evnt.preventDefault();
-
-     $.ajax({
-      url: queryURL,
-      method: 'GET'
-    }).done(function(response) {
-      
-      console.log(response);
-      
-
-       if (response.data[1].images) {
-       $("#buttons").append($("#buttons").append('<button type="button" class="btn btn-primary genButton" data-person="'+fixedGuess+'">'+guess+'</button>'))
-
-        imageGet2();
-
-        }
-
-    });
-}
-
-
-function imageGet2 () {
-
- $.ajax({
-      url: queryURL,
-      method: 'GET'
-    }).done(function(response) {
-
-         if(response.data[1].images) {
-
-          //Do everything imageGet does but with new queryURL
-
-          console.log("first");
-            $("#image").html("");
-            
-
-            console.log(response);
-
-            for (var i = 0; i < 12; i++) {
-
-        if (response.data[i] != null) {
-
-         
-        
-         $("#image").append("<div class='col-xs-4 pic gif"+ i +"' data-person = "+guess+" ><img src=" + response.data[i].images.fixed_height_still.url + " ></div>");
-         
-
-        $(".gif"+i).prepend("<h4 class = 'rating"+i+"''>Rating: "+(response.data[i].rating)+ "</h4>")
-        .data("picName", i)
-        .data("isPlaying", false);
-        //.append("<p>" + response.data[i].rating + "</p>");
-          
-
-
-      }
-
-      else {
-
-        console.log("item doesn't exist")
-        
-      }
-
-    }
-
-      $('#searchBox').val("")
-      .focus();
-        
-
-
-      }
-    })
-
-
-}
-
-
-$("#image").on("click", ".pic", function () {
-
-
-          currentPic = $(this).data("picName");
-
-          $.ajax({
-      url: queryURL,
-      method: 'GET'
-    }).done(function(response) {
-
-          console.log(currentPic);
-
-          for (var i = 0; i < 12; i++) {
-            
-
-          if (currentPic===i) {
-
-          if ($(".gif"+i).data("isPlaying") === false) {
-
-             
-
-           $(".gif"+i).html("<h4 class = 'rating"+i+"''>Rating: "+(response.data[i].rating)+ "</h4><div class='col-xs-4 pic gif"+ i +"' data-person = "+guess+" ><img src=" + response.data[i].images.fixed_height.url + " ></div>").data("isPlaying", true);
-
-
-           console.log($(".gif"+i).data("isPlaying"));
-          
-         }
-
-         else {
-
-
-          $(".gif"+i).html("<h4 class = 'rating"+i+"''>Rating: "+(response.data[i].rating)+ "</h4><div class='col-xs-4 pic gif"+ i +"' data-person = "+guess+" ><img src=" + response.data[i].images.fixed_height_still.url + " ></div>").data("isPlaying", false);
-
-            
-         }
-          
-
-          }
-
-          }
-
-         })
-         
-        })
-
-$('#buttons').on("click", ".genButton", function(event) {
-
-
-      var buttonClicked = $(event.target);
-      if (buttonClicked.attr('data-person')) {
-
-      guess = buttonClicked.attr('data-person');
-      fixedGuess = guess.replace(/ /g, "+");
-      
-      console.log("Clicked on button:", buttonClicked.attr('data-person'));
-
-      queryURL = ("http://api.giphy.com/v1/gifs/search?q="+fixedGuess+"&api_key=dc6zaTOxFJmzC");
-
-        imageGet2();
-     
-
-
-
-      
-
-    }
-});
-  
-
-});
-
-
   </script>
 
 
@@ -353,3 +415,4 @@ $('#buttons').on("click", ".genButton", function(event) {
 </body>
 
 </html>
+
