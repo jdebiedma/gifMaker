@@ -29,13 +29,23 @@ text-align: center;
   
 h4 {
 
-  text-align: left;
+  text-align: center;
   
+}
+
+.hidden {
+
+  display: none;
 }
 
 #buttons {
 
   text-align: center;
+}
+
+.inner {
+  width: 50%;
+  margin: 0 auto;
 }
 
 .genButton {
@@ -58,7 +68,7 @@ h4 {
 
 <div class = "row">
 
- <div class="col-lg-8">
+ <div class="col-xs-8">
     <div class="input-group" style = "margin-left: 50%">
       <input type="text" id="searchBox" class="form-control" placeholder="Search for..." autofocus>
       <span class="input-group-btn">
@@ -162,15 +172,11 @@ h4 {
 
 $(document).ready(function() {
 
- var searchTerm = "sloth";
-    var fixedSearchTerm = searchTerm.replace(" ", "+");
-    
-    var queryURL = ("http://api.giphy.com/v1/gifs/search?q="+fixedSearchTerm+"&api_key=dc6zaTOxFJmzC");
-
 var guess;
 var fixedGuess;
+var currentPic;
 
-
+var imageLinks = [];
 
 if ($('#searchBox').is(':focus')){
 
@@ -213,55 +219,17 @@ function imageGet() {
        if (response.data[1].images) {
        $("#buttons").append($("#buttons").append('<button type="button" class="btn btn-primary genButton" data-person="'+fixedGuess+'">'+guess+'</button>'))
 
+        imageGet2();
 
         }
-
-   
-
-
-      for (var i = 0; i < 10; i++) {
-
-        if (response.data[i] != null) {
-
-         
-        
-        $("#image").append("<div id = gif"+ i +" ><img src=" + response.data[i].images.fixed_height.url + " ></div>")
-        $("#gif"+i).prepend("<h4>Rating: "+(response.data[i].rating)+ "</h4>");
-        //.append("<p>" + response.data[i].rating + "</p>");
-          
-      }
-
-      else {
-
-        console.log("item doesn't exist")
-        
-      }
-
-    }
-
-      $('#searchBox').val("")
-      .focus();
-    
-   
 
     });
 }
 
-$('#buttons').on("click", ".genButton", function(event) {
 
+function imageGet2 () {
 
-      var buttonClicked = $(event.target);
-      if (buttonClicked.attr('data-person')) {
-
-      guess = buttonClicked.attr('data-person');
-      fixedGuess = guess.replace(/ /g, "+");
-      
-      console.log("Clicked on button:", buttonClicked.attr('data-person'));
-
-      queryURL = ("http://api.giphy.com/v1/gifs/search?q="+fixedGuess+"&api_key=dc6zaTOxFJmzC");
-
-
-      $.ajax({
+ $.ajax({
       url: queryURL,
       method: 'GET'
     }).done(function(response) {
@@ -276,16 +244,21 @@ $('#buttons').on("click", ".genButton", function(event) {
 
             console.log(response);
 
-            for (var i = 0; i < 10; i++) {
+            for (var i = 0; i < 12; i++) {
 
         if (response.data[i] != null) {
 
          
         
-        $("#image").append("<div id = gif"+ i +" ><img src=" + response.data[i].images.fixed_height.url + " ></div>")
-        $("#gif"+i).prepend("<h4>Rating: "+(response.data[i].rating)+ "</h4>");
+         $("#image").append("<div class='col-xs-4 pic gif"+ i +"' data-person = "+guess+" ><img src=" + response.data[i].images.fixed_height_still.url + " ></div>");
+         
+
+        $(".gif"+i).prepend("<h4 class = 'rating"+i+"''>Rating: "+(response.data[i].rating)+ "</h4>")
+        .data("picName", i);
         //.append("<p>" + response.data[i].rating + "</p>");
           
+
+
       }
 
       else {
@@ -304,6 +277,59 @@ $('#buttons').on("click", ".genButton", function(event) {
       }
     })
 
+
+}
+
+
+$("#image").on("click", ".pic", function () {
+
+          console.log($(this).data("picName"));
+
+          currentPic = $(this).data("picName");
+
+          $.ajax({
+      url: queryURL,
+      method: 'GET'
+    }).done(function(response) {
+
+          console.log(currentPic);
+
+          for (var i = 0; i < 12; i++) {
+            
+
+          if(currentPic===i){
+
+            console.log("we in there");
+
+           $(".gif"+i).html("<h4 class = 'rating"+i+"''>Rating: "+(response.data[i].rating)+ "</h4><div class='col-xs-4 pic gif"+ i +"' data-person = "+guess+" ><img src=" + response.data[i].images.fixed_height.url + " ></div>");
+
+          
+
+          
+
+          }
+
+          }
+
+         })
+         
+        })
+
+$('#buttons').on("click", ".genButton", function(event) {
+
+
+      var buttonClicked = $(event.target);
+      if (buttonClicked.attr('data-person')) {
+
+      guess = buttonClicked.attr('data-person');
+      fixedGuess = guess.replace(/ /g, "+");
+      
+      console.log("Clicked on button:", buttonClicked.attr('data-person'));
+
+      queryURL = ("http://api.giphy.com/v1/gifs/search?q="+fixedGuess+"&api_key=dc6zaTOxFJmzC");
+
+        imageGet2();
+     
 
 
 
