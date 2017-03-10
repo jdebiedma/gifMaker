@@ -175,27 +175,15 @@ $(document).ready(function() {
 var guess;
 var fixedGuess;
 var currentPic;
+var isPlaying = false;
 
 var imageLinks = [];
 
-if ($('#searchBox').is(':focus')){
+      $("#submit").on("click", imageGet);
 
-        var wage = document.getElementById("searchBox");
-
-        $("#submit").on("click", function() {
-
-          imageGet();
-          
-        })
-
-        wage.addEventListener("keydown", function (e) {
-      if (e.keyCode === 13) {  //checks whether the pressed key is "Enter"
-        imageGet();
-   
-    }
-});
-      }
-
+      $("#searchBox").keydown(function (e) {
+        if (e.keyCode === 13) imageGet();
+      });
    
 
 
@@ -254,7 +242,8 @@ function imageGet2 () {
          
 
         $(".gif"+i).prepend("<h4 class = 'rating"+i+"''>Rating: "+(response.data[i].rating)+ "</h4>")
-        .data("picName", i);
+        .data("picName", i)
+        .data("isPlaying", false);
         //.append("<p>" + response.data[i].rating + "</p>");
           
 
@@ -283,7 +272,6 @@ function imageGet2 () {
 
 $("#image").on("click", ".pic", function () {
 
-          console.log($(this).data("picName"));
 
           currentPic = $(this).data("picName");
 
@@ -297,14 +285,26 @@ $("#image").on("click", ".pic", function () {
           for (var i = 0; i < 12; i++) {
             
 
-          if(currentPic===i){
+          if (currentPic===i) {
 
-            console.log("we in there");
+          if ($(".gif"+i).data("isPlaying") === false) {
 
-           $(".gif"+i).html("<h4 class = 'rating"+i+"''>Rating: "+(response.data[i].rating)+ "</h4><div class='col-xs-4 pic gif"+ i +"' data-person = "+guess+" ><img src=" + response.data[i].images.fixed_height.url + " ></div>");
+             
 
+           $(".gif"+i).html("<h4 class = 'rating"+i+"''>Rating: "+(response.data[i].rating)+ "</h4><div class='col-xs-4 pic gif"+ i +"' data-person = "+guess+" ><img src=" + response.data[i].images.fixed_height.url + " ></div>").data("isPlaying", true);
+
+
+           console.log($(".gif"+i).data("isPlaying"));
           
+         }
 
+         else {
+
+
+          $(".gif"+i).html("<h4 class = 'rating"+i+"''>Rating: "+(response.data[i].rating)+ "</h4><div class='col-xs-4 pic gif"+ i +"' data-person = "+guess+" ><img src=" + response.data[i].images.fixed_height_still.url + " ></div>").data("isPlaying", false);
+
+            
+         }
           
 
           }
@@ -340,11 +340,7 @@ $('#buttons').on("click", ".genButton", function(event) {
   
 
 });
-//to make them all appear...?
-//test if it works once you have internet
-//alert(response.data[1].url); gives you the actual URL of the site where the image is hosted, but the actual pic (variant) is i.e. response.data[1].images.downsized.url
 
-  
 
   </script>
 
