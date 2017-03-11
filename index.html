@@ -43,6 +43,8 @@ h4 {
 }
 
 
+
+
 .hidden {
 
   display: none;
@@ -224,7 +226,7 @@ $.ajax({
       
       console.log(response); 
 
-       $("#image").append("<div class='col-xs-4 randompic gif"+ i +"' data-person = random"+i+" ><img class='midPic' src=" + response.data.fixed_height_downsampled_url+ " ></div>");
+       $("#image").append("<div class='col-xs-4 randompic gif"+ i +"' data-person = random"+i+" ><img class='midPic' src=" + response.data.fixed_height_downsampled_medium_url+ " ></div>");
 
        $(".gif"+i)
         .data("picName", i)
