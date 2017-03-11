@@ -81,8 +81,8 @@ h4 {
 
 <div class = "row">
 
- <div class="col-xs-8">
-    <div class="input-group" style = "margin-left: 50%">
+ <div class="col-lg-6 col-lg-offset-3">
+    <div class="input-group" >
       <input type="text" id="searchBox" class="form-control" placeholder="Search for..." autofocus>
       <span class="input-group-btn">
         <button class="btn btn-default" id="submit" type="button">Go!</button>
@@ -180,7 +180,7 @@ function imageGet2 () {
 
          
         
-         $("#image").append("<div class='col-xs-4 pic gif"+ i +"' data-person = "+guess+" ><img class='midPic' src=" + response.data[i].images.fixed_height_still.url + " ></div>");
+         $("#image").append("<div class='col-sm-4 pic gif"+ i +"' data-person = "+guess+" ><img class='midPic' src=" + response.data[i].images.fixed_height_still.url + " ></div>");
          
 
         $(".gif"+i).prepend("<h4 class = 'rating"+i+"''>Rating: "+(response.data[i].rating)+ "</h4>")
@@ -226,7 +226,7 @@ $.ajax({
       
       console.log(response); 
 
-       $("#image").append("<div class='col-xs-4 randompic gif"+ i +"' data-person = random"+i+" ><img class='midPic' src=" + response.data.fixed_height_downsampled_medium_url+ " ></div>");
+       $("#image").append("<div class='col-sm-4 randompic gif"+ i +"' data-person = random"+i+" ><img class='midPic' src=" + response.data.fixed_height_downsampled_url+ " ></div>");
 
        $(".gif"+i)
         .data("picName", i)
@@ -264,7 +264,7 @@ $("#image").on("click", ".pic", function () {
 
              
 
-           $(".gif"+i).html("<h4 class = 'rating"+i+"''>Rating: "+(response.data[i].rating)+ "</h4><div class='col-xs-4 pic gif"+ i +"' data-person = "+guess+" ><img class='midPic' src=" + response.data[i].images.fixed_height.url + " ></div>").data("isPlaying", true);
+           $(".gif"+i).html("<h4 class = 'rating"+i+"''>Rating: "+(response.data[i].rating)+ "</h4><div class='col-sm-4 pic gif"+ i +"' data-person = "+guess+" ><img class='midPic' src=" + response.data[i].images.fixed_height.url + " ></div>").data("isPlaying", true);
 
 
            console.log($(".gif"+i).data("isPlaying"));
@@ -273,7 +273,7 @@ $("#image").on("click", ".pic", function () {
 
          else if(isPlaying) {
 
-          $(".gif"+i).html("<h4 class = 'rating"+i+"''>Rating: "+(response.data[i].rating)+ "</h4><div class='col-xs-4 pic gif"+ i +"' data-person = "+guess+" ><img class='midPic' src=" + response.data[i].images.fixed_height_still.url + " ></div>").data("isPlaying", false);
+          $(".gif"+i).html("<h4 class = 'rating"+i+"''>Rating: "+(response.data[i].rating)+ "</h4><div class='col-sm-4 pic gif"+ i +"' data-person = "+guess+" ><img class='midPic' src=" + response.data[i].images.fixed_height_still.url + " ></div>").data("isPlaying", false);
 
             
          }
