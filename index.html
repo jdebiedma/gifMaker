@@ -25,6 +25,7 @@ margin-top: 0px;
 text-align: center;
 
 
+
 }
   
 h4 {
@@ -96,6 +97,53 @@ h4 {
 
 <div class = "row">
 
+ <div class="col-xs-2 col-xs-offset-4">
+
+<div class="form-group" style="text-align: center">
+  <h6 style="text-align: center" for="sel1">images per row:</h6>
+  <select class="form-control" id="sel1">
+    <option>1</option>
+    <option>2</option>
+    <option>3</option>
+    <option>4</option>
+    <option>6</option>
+  </select>
+</div>
+
+</div>
+
+ <div class="col-xs-2">
+
+<div class="form-group" style="text-align: center">
+  <h6 style="text-align: center" for="sel1">how many images total?</h6>
+  <select class="form-control" id="buy1">
+    <option>1</option>
+    <option>2</option>
+    <option>3</option>
+    <option>4</option>
+    <option>6</option>
+    <option>12</option>
+    <option>16</option>
+    <option>20</option>
+    <option>25</option>
+  </select>
+</div>
+
+</div>
+</div>
+
+<br>
+
+
+
+
+
+
+<br>
+
+
+<div class = "row">
+
 <div class="col-lg-12">
 
 <div id="buttons">
@@ -119,6 +167,14 @@ var guess;
 var fixedGuess;
 var currentPic;
 var isPlaying = false;
+var cols = 4;
+var numPics =( 12 / cols  );
+
+var numGenerated = 12;
+
+$("#sel1").val(3);
+$("#buy1").val(12);
+
 
 var imageLinks = [];
 
@@ -131,6 +187,8 @@ var imageLinks = [];
 
 
 function imageGet() {
+
+   
 
     $("#image").html("");
 
@@ -145,7 +203,8 @@ function imageGet() {
     }).done(function(response) {
       
       console.log(response);
-      
+      numPics = (12/($("#sel1").val())) ;
+      numGenerated = $("#buy1").val();
 
        if (response.data[1].images) {
        $("#buttons").append($("#buttons").append('<button type="button" class="btn btn-primary genButton" data-person="'+fixedGuess+'">'+guess+'</button>'))
@@ -159,6 +218,8 @@ function imageGet() {
 
 
 function imageGet2 () {
+
+   numPics = (12/($("#sel1").val())) ;
 
  $.ajax({
       url: queryURL,
@@ -175,13 +236,15 @@ function imageGet2 () {
 
             console.log(response);
 
-            for (var i = 0; i < 12; i++) {
+            numPics = (12/($("#sel1").val())) ;
+
+            for (var i = 0; i < $("#buy1").val(); i++) {
 
         if (response.data[i] != null) {
 
          
         
-         $("#image").append("<div class='col-sm-4 pic gif"+ i +"' data-person = "+guess+" ><img class='midPic' src=" + response.data[i].images.fixed_height_still.url + " ></div>");
+         $("#image").append("<div class='col-sm-"+numPics+" pic gif"+ i +"' data-person = "+guess+" ><img class='midPic' src=" + response.data[i].images.fixed_height_still.url + " ></div>");
          
 
         $(".gif"+i).prepend("<h4 class = 'rating"+i+"''>Rating: "+(response.data[i].rating)+ "</h4>")
@@ -214,6 +277,8 @@ function imageGet2 () {
 
 function randomGet() {
 
+   numPics = (12/($("#sel1").val())) ;
+
 $("#image").html("");
 
 for (var i = 0; i < 12; i++) {
@@ -227,7 +292,9 @@ $.ajax({
       
       console.log(response); 
 
-       $("#image").append("<div class='col-sm-4 randompic gif"+ i +"' data-person = random"+i+" ><img class='midPic' src=" + response.data.fixed_height_downsampled_url+ " ></div>");
+      numPics = (12/($("#sel1").val())) ;
+
+       $("#image").append("<div class='col-sm-"+numPics+" randompic gif"+ i +"' data-person = random"+i+" ><img class='midPic' src=" + response.data.fixed_height_downsampled_url+ " ></div>");
 
        $(".gif"+i)
         .data("picName", i)
@@ -256,16 +323,16 @@ $("#image").on("click", ".pic", function () {
 
           console.log(currentPic);
 
-          for (var i = 0; i < 12; i++) {
+          for (var i = 0; i < $("#buy1").val(); i++) {
             
 
           if (currentPic===i) {
 
           if (!isPlaying) {
 
-             
+             numPics = (12/($("#sel1").val())) ;
 
-           $(".gif"+i).html("<h4 class = 'rating"+i+"''>Rating: "+(response.data[i].rating)+ "</h4><div class='col-sm-4 pic gif"+ i +"' data-person = "+guess+" ><img class='midPic' src=" + response.data[i].images.fixed_height.url + " ></div>").data("isPlaying", true);
+           $(".gif"+i).html("<h4 class = 'rating"+i+"''>Rating: "+(response.data[i].rating)+ "</h4><div class='col-sm-"+numPics+" pic gif"+ i +"' data-person = "+guess+" ><img class='midPic' src=" + response.data[i].images.fixed_height.url + " ></div>").data("isPlaying", true);
 
 
            console.log($(".gif"+i).data("isPlaying"));
@@ -274,7 +341,7 @@ $("#image").on("click", ".pic", function () {
 
          else if(isPlaying) {
 
-          $(".gif"+i).html("<h4 class = 'rating"+i+"''>Rating: "+(response.data[i].rating)+ "</h4><div class='col-sm-4 pic gif"+ i +"' data-person = "+guess+" ><img class='midPic' src=" + response.data[i].images.fixed_height_still.url + " ></div>").data("isPlaying", false);
+          $(".gif"+i).html("<h4 class = 'rating"+i+"''>Rating: "+(response.data[i].rating)+ "</h4><div class='col-sm-"+numPics+" pic gif"+ i +"' data-person = "+guess+" ><img class='midPic' src=" + response.data[i].images.fixed_height_still.url + " ></div>").data("isPlaying", false);
 
             
          }
